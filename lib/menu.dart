@@ -3,17 +3,18 @@ import 'package:flutter/material.dart';
 class Item {
   final String name;
   final IconData icon;
+  final Color color;
 
-  Item(this.name, this.icon);
+  Item(this.name, this.icon, this.color);
 }
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({Key? key}) : super(key: key);
 
   final List<Item> items = [
-    Item("Lihat Item", Icons.checklist),
-    Item("Tambah Item", Icons.add),
-    Item("Logout", Icons.logout),
+    Item("Lihat Item", Icons.checklist, Colors.yellow.shade700),
+    Item("Tambah Item", Icons.add, Colors.orange.shade600),
+    Item("Logout", Icons.logout, Colors.blue.shade600),
   ];
 
   // This widget is the home page of your application. It is stateful, meaning
@@ -27,49 +28,49 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'OrbitTune',
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'OrbitTune',
         ),
-        body: SingleChildScrollView(
-          // Widget wrapper yang dapat discroll
-          child: Padding(
-            padding: const EdgeInsets.all(10.0), // Set padding dari halaman
-            child: Column(
-              // Widget untuk menampilkan children secara vertikal
-              children: <Widget>[
-                const Padding(
-                  padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                  // Widget Text untuk menampilkan tulisan dengan alignment center dan style yang sesuai
-                  child: Text(
-                    'OrbitTune Instrument Inventory', // Text yang menandakan toko
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
+      ),
+      body: SingleChildScrollView(
+        // Widget wrapper yang dapat discroll
+        child: Padding(
+          padding: const EdgeInsets.all(10.0), // Set padding dari halaman
+          child: Column(
+            // Widget untuk menampilkan children secara vertikal
+            children: <Widget>[
+              const Padding(
+                padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+                // Widget Text untuk menampilkan tulisan dengan alignment center dan style yang sesuai
+                child: Text(
+                  'OrbitTune Instrument Inventory', // Text yang menandakan toko
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                // Grid layout
-                GridView.count(
-                  // Container pada card kita.
-                  primary: true,
-                  padding: const EdgeInsets.all(20),
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  crossAxisCount: 3,
-                  shrinkWrap: true,
-                  children: items.map((Item item) {
-                    // Iterasi untuk setiap item
-                    return ItemCard(item);
-                  }).toList(),
-                ),
-              ],
-            ),
+              ),
+              // Grid layout
+              GridView.count(
+                // Container pada card kita.
+                primary: true,
+                padding: const EdgeInsets.all(20),
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                crossAxisCount: 3,
+                shrinkWrap: true,
+                children: items.map((Item item) {
+                  // Iterasi untuk setiap item
+                  return ItemCard(item);
+                }).toList(),
+              ),
+            ],
           ),
         ),
+      ),
     );
   }
 }
@@ -82,7 +83,7 @@ class ItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.blue,
+      color: item.color,
       child: InkWell(
         // Area responsive terhadap sentuhan
         onTap: () {
