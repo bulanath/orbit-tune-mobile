@@ -65,17 +65,19 @@ class MyHomePage extends StatelessWidget {
 class Item {
   final String name;
   final IconData icon;
+  final Color color;
 
-  Item(this.name, this.icon);
+  Item(this.name, this.icon, this.color);
 }
+
 ```
 
 Setelah itu, saya menambahkan kode berikut di bawah `MyHomePage({Key? key}) : super(key: key);` untuk menambahkan tombol-tombol sederhana pada aplikasi.
 ```
 final List<Item> items = [
-    Item("Lihat Item", Icons.checklist),
-    Item("Tambah Item", Icons.add),
-    Item("Logout", Icons.logout),
+    Item("Lihat Item", Icons.checklist, Colors.yellow.shade700),
+    Item("Tambah Item", Icons.add, Colors.orange.shade600),
+    Item("Logout", Icons.logout, Colors.blue.shade600),
 ];
 ```
 
@@ -89,7 +91,7 @@ class ItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.blue,
+      color: item.color, // Memberi warna pada card sesuai dengan Item
       child: InkWell(
         // Area responsive terhadap sentuhan
         onTap: () {
