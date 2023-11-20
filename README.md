@@ -4,6 +4,353 @@
 **NPM     : 2206032135**<br>
 **Kelas   : PBP C**<br>
 
+<!-- ## Tugas 9
+### Apakah bisa kita melakukan pengambilan data JSON tanpa membuat model terlebih dahulu? Jika iya, apakah hal tersebut lebih baik daripada membuat model sebelum melakukan pengambilan data JSON?
+
+### Jelaskan fungsi dari CookieRequest dan jelaskan mengapa _instance_ CookieRequest perlu untuk dibagikan ke semua komponen di aplikasi Flutter.
+
+### Jelaskan mekanisme pengambilan data dari JSON hingga dapat ditampilkan pada Flutter.
+
+### Jelaskan mekanisme autentikasi dari input data akun pada Flutter ke Django hingga selesainya proses autentikasi oleh Django dan tampilnya menu pada Flutter.
+
+### Sebutkan seluruh _widget_ yang kamu pakai pada tugas ini dan jelaskan fungsinya masing-masing.
+
+### Jelaskan bagaimana cara kamu mengimplementasikan _checklist_ di atas secara _step-by-step_ -->
+
+## Tugas 8
+###  Jelaskan perbedaan antara `Navigator.push()` dan `Navigator.pushReplacement()`, disertai dengan contoh mengenai penggunaan kedua metode tersebut yang tepat!
+Pada `Navigator.push()`, ditambahkan _route_ baru di atas _route_ yang sudah ada ke _navigation stack_. Halaman sebelumnya tetap ada di dalam _stack_ sehingga pengguna dapat kembali ke halaman tersebut. Contoh `Navigator.push()` pada program adalah
+```
+if (item.name == "Tambah Item") {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => ItemFormPage(),
+    ),
+  );
+}
+```
+
+Sedangkan pada `Navigator.pushReplacement()`, digantikan _route_ baru di atas _route_ yang sudah ada ke _navigation stack_ sehingga halaman sebelumnya dihapus dari _stack_ dan pengguna tidak dapat kembali ke halaman sebelumnya. Contoh `Navigator.pushReplacement()` pada program adalah
+```
+ListTile(
+  leading: const Icon(Icons.home_outlined),
+  title: const Text('Main Page'),
+  // Bagian redirection ke MyHomePage
+  onTap: () {
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MyHomePage(),
+        ));
+  },
+),
+```
+
+### Jelaskan masing-masing _layout_ widget pada Flutter dan konteks penggunaannya masing-masing!
+- `Scaffold` digunakan untuk menyediakan struktur dasar untuk sebuah halaman dalam aplikasi Flutter. Pada tugas ini `Scaffold` digunakan sebagai kerangka kerja untuk membangun tata letak halaman `MyHomePage`, `ItemFormPage`, dan `ItemListPage`.
+- `Column` digunakan untuk mengatur posisi _child widget_ secara vertikal. Contoh penggunaan `Column` pada tugas ini adalah untuk menyusun elemen form pada halaman `ItemFormPage` secara vertikal.
+- `Row` digunakan untuk mengature posisi _child widget_ secara hortizontal.
+- `Align` digunakan untuk menempatkan _child widget_ pada posisi tertentu di sebuah halaman. Contoh penggunaan `Align` pada tugas ini adalah untuk menempatkan button `save` pada halaman `ItemFormPage` menggunakan `Alignment.bottomCenter`.
+- `Drawer` digunakan untuk menampilkan menu sisi dalam aplikasi. Contoh penggunaan `Drawer` pada tugas ini adalah untuk menampilkan `LeftDrawer` sebagai menu navigasi di sebelah kiri layar.
+- `ListView` digunakan untuk menyusun _child element_ dalam satu arah, baik vertikal maupun horizontal. Contoh penggunaan `ListView` pada tugas ini adalah untuk menampilkan elemen `ListTile` dan `DrawerHeader` pada halaman `ItemFormPage`.
+- `Container` digunakan sebagai wadah untuk menyusun dan memposisikan _child widget_.
+- `Stack` digunakan untuk menumpuk _child widget_ di atas satu sama lain, misalnya untuk menempatkan _widget_ teks dan gambar secara bersamaan.
+- `Wrap` berfungsi untuk menyusun _child widget_ dalam sebuah baris atau kolom dan memindahkannya ke baris atau kolom baru jika sudah tidak cukup. Intinya, _widget_ ini digunakan untuk menyusun _widget_ dalam ruang terbatas tanpa menyebabkan _overflow_.
+
+### Sebutkan apa saja elemen input pada form yang kamu pakai pada tugas kali ini dan jelaskan mengapa kamu menggunakan elemen input tersebut!
+Untuk menerima elemen input pada form, saya menggunakan _widget_ `TextFormField`. `TextFormField` digunakan karena dapat menerima jawaban bebas sesuai dengan apa yang pengguna ketik dan secara otomatis menyediakan validasi input. Elemen input yang digunakan pada tugas ini adalah:
+- `Name`, untuk menerima nama instrumen dari pengguna.
+- `Brand`, untuk menerima merek instrumen dari pengguna.
+- `Type`, untuk menerima tipe instrumen dari pengguna.
+- `Amount`, untuk menerima jumlah instrumen dari pengguna.
+- `Description`, untuk menerima deskrpsi kondisi instrumen dari pengguna.
+
+### Bagaimana penerapan _clean architecture_ pada aplikasi Flutter?
+_Clean architecture_ merupakan sebuah prinsip dalam pengembangan aplikasi yang melakukan pemisahan kepentingan (_separation of concerns_) sehingga menciptakan kode yang modular. _Clean architecture_ terbagi menjadi beberapa _layer_, yaitu:
+- `Screens` berisi komponen UI seperti _widget_, layar, dan tampilan. Lapisan ini befungsi untuk menangani interaksi pengguna dan me-_render_ antarmuka pengguna.
+- `Domain` berfungsi untuk mengatur logika terkait bagaimana elemen-elemen pada aplikasi berinteraksi.
+- `Data` berfungsi untuk mengambil dan menyimpan data.
+
+Untuk tugas ini, penerapan _clean architecture_ dilakukan saat melakukan _refactoring file_ untuk melakukan pemisahan lapisan `Screens` untuk tampilan UI saja.
+
+### Jelaskan bagaimana cara kamu mengimplementasikan _checklist_ di atas secara _step-by-step_
+1. Pertama, saya menambahkan halaman formulir dengan membuat `itemlist_form.dart` pada `lib/screens`. Kode yang ditambahkan adalah sebagai berikut.
+```
+import 'package:flutter/material.dart';
+import 'package:orbit_tune/screens/menu.dart';
+import 'package:orbit_tune/screens/itemlist_form.dart';
+import 'package:orbit_tune/screens/list_item.dart';
+import 'package:orbit_tune/models/item.dart';
+
+class LeftDrawer extends StatelessWidget {
+  const LeftDrawer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        children: [
+          const DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.blue,
+            ),
+            child: Column(
+              children: [
+                Text(
+                  'OrbitTune',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                Padding(padding: EdgeInsets.all(10)),
+                Text("Track All of Your Instruments Here!",
+                    // Menambahkan gaya teks dengan center alignment, font ukuran 15, warna putih, dan weight biasa
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w100,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.home_outlined),
+            title: const Text('Main Page'),
+            // Bagian redirection ke MyHomePage
+            onTap: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MyHomePage(),
+                  ));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.checklist),
+            title: const Text('Lihat Item'),
+            // Bagian redirection ke ShopFormPage
+            onTap: () {
+              /*
+              Routing ke ShopFormPage di sini, setelah halaman ShopFormPage sudah dibuat.
+              */
+              Navigator.pushReplacement(
+                context, 
+                MaterialPageRoute(builder: (context) => ItemListPage(items: items))
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.add),
+            title: const Text('Tambah Item'),
+            // Bagian redirection ke ShopFormPage
+            onTap: () {
+              /*
+              Routing ke ShopFormPage di sini, setelah halaman ShopFormPage sudah dibuat.
+              */
+              Navigator.pushReplacement(
+                context, 
+                MaterialPageRoute(builder: (context) => ItemFormPage())
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+
+2. Agar halaman tambah item dapat diakses melalui halaman utama, saya menambahkan kode berikut pada `item_card.dart` di direktori `lib/screens`.
+```
+if (item.name == "Tambah Item") {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => ItemFormPage(),
+    ),
+  );
+}
+```
+
+3. Kemudian saya membuat `list_item.dart` pada `lib/screens` untuk menambah halaman Lihat Item. Kode yang ditambahkan adalah sebagai berikut.
+```
+import 'package:flutter/material.dart';
+import 'package:orbit_tune/widgets/left_drawer.dart';
+import 'package:orbit_tune/models/item.dart';
+
+class ItemListPage extends StatelessWidget {
+  final List<Item> items;
+
+  const ItemListPage({Key? key, required this.items}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Daftar Album',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+      ),
+      drawer: const LeftDrawer(),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0), // Jarak kiri kanan
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 8.0,
+            mainAxisSpacing: 8.0,
+          ),
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            return Card(
+              color: Colors.white, // Warna putih
+              elevation: 4.0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          items[index].name,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text("Brand: ${items[index].brand}"),
+                        Text("Type: ${items[index].type}"),
+                        Text("Amount: ${items[index].amount}"),
+                        Text("Description: ${items[index].description}"),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+```
+
+4. Agar halaman lihat item dapat diakses melalui halaman utama, saya menambahkan kode berikut pada `item_card.dart` di direktori `lib/screens`.
+```
+if (item.name == "Lihat Item") {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => ItemListPage(items: items),
+    ),
+  );
+}
+```
+
+5. Terakhir, saya menambahkan Drawer pada aplikasi dengan membuat `left_drawer.dart` pada `lib/widgets` agar menu aplikasi dapat diakses dari Drawer pada sebelah kiri aplikasi. Kode yang ditambahkan adalah sebagai berikut.
+```
+import 'package:flutter/material.dart';
+import 'package:orbit_tune/screens/menu.dart';
+import 'package:orbit_tune/screens/itemlist_form.dart';
+import 'package:orbit_tune/screens/list_item.dart';
+import 'package:orbit_tune/models/item.dart';
+
+class LeftDrawer extends StatelessWidget {
+  const LeftDrawer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        children: [
+          const DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.blue,
+            ),
+            child: Column(
+              children: [
+                Text(
+                  'OrbitTune',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                Padding(padding: EdgeInsets.all(10)),
+                Text("Track All of Your Instruments Here!",
+                    // Menambahkan gaya teks dengan center alignment, font ukuran 15, warna putih, dan weight biasa
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w100,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.home_outlined),
+            title: const Text('Main Page'),
+            // Bagian redirection ke MyHomePage
+            onTap: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MyHomePage(),
+                  ));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.checklist),
+            title: const Text('Lihat Item'),
+            // Bagian redirection ke ShopFormPage
+            onTap: () {
+              /*
+              Routing ke ShopFormPage di sini, setelah halaman ShopFormPage sudah dibuat.
+              */
+              Navigator.pushReplacement(
+                context, 
+                MaterialPageRoute(builder: (context) => ItemListPage(items: items))
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.add),
+            title: const Text('Tambah Item'),
+            // Bagian redirection ke ShopFormPage
+            onTap: () {
+              /*
+              Routing ke ShopFormPage di sini, setelah halaman ShopFormPage sudah dibuat.
+              */
+              Navigator.pushReplacement(
+                context, 
+                MaterialPageRoute(builder: (context) => ItemFormPage())
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+
 ## Tugas 7
 ### Apa perbedaan utama antara _stateless_ dan _stateful widget_ dalam konteks pengembangan aplikasi Flutter?
 _Stateless widget_ merupakan _widget_ yang tidak dapat berubah dan tidak dapat melakukan _rebuild_ selama aplikasi sedang dieksekusi. _Widget_ ini bersifat _immutable_ dan statis sehingga tidak dapat merespon peristiwa eksternal. _Stateless widget_ biasanya digunakan untuk menampilkan konten statis seperti _widget_ Text, Icon, IconButton, dan Image.
