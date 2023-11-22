@@ -26,7 +26,7 @@ class MyHomePage extends StatelessWidget {
         title: const Text(
           'OrbitTune',
         ),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.blue.shade800,
         foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(

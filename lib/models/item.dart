@@ -1,15 +1,69 @@
-class Item {
-  final String name;
-  final String brand;
-  final String type;
-  final int    amount;
-  final String description;
+// To parse this JSON data, do
+//
+//     final item = itemFromJson(jsonString);
 
-  Item(this.name, this.brand, this.type, this.amount, this.description);
+import 'dart:convert';
+
+List<Item> itemFromJson(String str) => List<Item>.from(json.decode(str).map((x) => Item.fromJson(x)));
+
+String itemToJson(List<Item> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+class Item {
+    String model;
+    int pk;
+    Fields fields;
+
+    Item({
+        required this.model,
+        required this.pk,
+        required this.fields,
+    });
+
+    factory Item.fromJson(Map<String, dynamic> json) => Item(
+        model: json["model"],
+        pk: json["pk"],
+        fields: Fields.fromJson(json["fields"]),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "model": model,
+        "pk": pk,
+        "fields": fields.toJson(),
+    };
 }
 
-// List item & dummy data
-List <Item> items = [
-  Item("Keyboard", "Nord", "Stage 4", 2, "In good conditions"),
-  Item("Guitar", "Fender", "Telecaster", 1, "It has broken strings")
-];
+class Fields {
+    int user;
+    String name;
+    String brand;
+    String type;
+    int amount;
+    String description;
+
+    Fields({
+        required this.user,
+        required this.name,
+        required this.brand,
+        required this.type,
+        required this.amount,
+        required this.description,
+    });
+
+    factory Fields.fromJson(Map<String, dynamic> json) => Fields(
+        user: json["user"],
+        name: json["name"],
+        brand: json["brand"],
+        type: json["type"],
+        amount: json["amount"],
+        description: json["description"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "user": user,
+        "name": name,
+        "brand": brand,
+        "type": type,
+        "amount": amount,
+        "description": description,
+    };
+}
