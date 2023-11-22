@@ -6,7 +6,7 @@
 
 ## Tugas 9
 ### Apakah bisa kita melakukan pengambilan data JSON tanpa membuat model terlebih dahulu? Jika iya, apakah hal tersebut lebih baik daripada membuat model sebelum melakukan pengambilan data JSON?
-Ya bisa, akan tetapi hal tersebut tidak disarankan karena kita tidak dapat mengetahui tipe data yang diambil dari JSON sehingga kita harus mengaksesnya dengan cara yang berbeda-beda tergantung dengan tipe datanya. Kita juga tidak dapat melakukan validasi terhadap data yang kita ambil sehingga data yang diambil bersifat tidak valid. Membuat model terlebih dahulu akan memudahkan kita dalam mengubah data dari JSON menjadi dart _object_.
+Ya bisa, akan tetapi hal tersebut tidak disarankan karena kita tidak dapat mengetahui tipe data yang diambil dari JSON sehingga kita harus mengaksesnya dengan cara yang berbeda-beda tergantung dengan tipe datanya. Kita juga tidak dapat melakukan validasi terhadap data yang kita ambil sehingga data yang diambil bersifat tidak valid. Membuat model terlebih dahulu akan memudahkan kita dalam mengubah data dari JSON menjadi objek dart.
 
 ### Jelaskan fungsi dari CookieRequest dan jelaskan mengapa _instance_ CookieRequest perlu untuk dibagikan ke semua komponen di aplikasi Flutter.
 `CookieRequest` merupakan salah satu class pada _package_ `pbp_django_auth.dart` yang berfungsi untuk mengambil cookie dari hasil _request_ autentikasi login dan logout ke server Django. `CookieRequest` perlu untuk dibagikan ke semua komponen dalam aplikasi Flutter agar dapat digunakan oleh semua _widget_ pada aplikasi untuk melakukan _request_ ke server Django serta agar status cookies pada aplikasi konsisten.
@@ -15,7 +15,7 @@ Ya bisa, akan tetapi hal tersebut tidak disarankan karena kita tidak dapat menge
 1. Membuat model kustom dengan memanfaatkan _website_ Quicktype untuk membuat data JSON dari _endpoint_ JSON `/json` yang telah dibuat pada tugas Django.
 2. Menambahkan dependensi HTTP dengan menambahkan _package_ `http` pada proyek Flutter dan menambhakan `<uses-permission android:name="android.permission.INTERNET" />` pada file `android/app/src/main/AndroidManifest.xml` agar dapat memiliki akses internet.
 3. Melakukan _fetch_ data dengan mengimplementasikan fungsi _asyncrhonous_ dan mengirim _request_ HTTP ke server Django untuk mengambil data JSON.
-4. Mengubah data JSON menjadi objek dart menggunakan `utility class` yang sudah dibuat sehingga dapat menampilkan data pada _widget_ dengan memasukkannya sebagai _property_ dari _widget_.
+4. Mengubah data JSON menjadi objek dart menggunakan _utility class_ yang sudah dibuat sehingga dapat menampilkan data pada _widget_ dengan memasukkannya sebagai _property_ dari _widget_.
 
 ### Jelaskan mekanisme autentikasi dari input data akun pada Flutter ke Django hingga selesainya proses autentikasi oleh Django dan tampilnya menu pada Flutter.
 1. Pengguna memasukkan _username_ dan _password_ mereka pada halaman `Login`.
@@ -35,6 +35,70 @@ Ya bisa, akan tetapi hal tersebut tidak disarankan karena kita tidak dapat menge
 - `Padding` berfungsi untuk memberikan jarak sekitar elemen atau _widget_.
 
 ### Jelaskan bagaimana cara kamu mengimplementasikan _checklist_ di atas secara _step-by-step_
+1. Pertama, saya membuat halaman `Login` dan mengintegrasikan aplikasi Flutter dengan sistem autentikasi Django. Pada tugas Django sebelumnya, saya membuat aplikasi baru `authetication` dengan menjalankan `python manage.py startapp authentication` pada terminal. Setelah itu, saya membuat fungsi `login` pada `views.py` untuk menangani proses autentikasi login.
+
+2. Melakukan instalasi _dependencies_ `provider` dan `pbp_django_auth` dan memodifikasi _root widget_ untuk menyediakan _instance_ `CookieRequest` ke semua _child widgets_ pada `main.dart`. Kemudian saya membuat halaman `Login` dengan membuat berkas baru `lib/screens/login.dart`.
+
+3. Membuat model kustom dan _utility function_ untuk data yang akan diambil dari JSON seperti yang telah dijelaskan pada pertanyaan sebelumnya terkait mekanisme pengambilan data JSON.
+
+4. Menambahkan fungsi view baru `create_product_flutter` pada `main/views.py` di proyek tugas Django agar form Flutter dapat terintegrasi dengan layanan Django serta menambahkan `CookieRequest` dan mengubah status `onPressed: ()` menjadi _async_ serta menambahkan kode sesuai dengan apa yang telah diajarkan pada tutorial 8 ke kode Flutter.
+
+5. Mengimplementasikan fitur logout pada aplikasi dengan menambahkan fungsi view baru pada `authentication/views.py` serta melakukan _routing_ URL. Kemudian menambahkan `CookieRequest` dan mengubah status `onTap: ()` menjadi _async_ serta menambahkan kode sesuai dengan apa yang telah diajarkan pada tutorial 8 pada `lib/widgets/item_card.dart`.
+
+6. Membuat halaman `ItemDetailPage` agar jika setiap item pada `ItemPage` diklik dapat memunculkan halaman baru yang menunjukkan detail setiap item. Pertama, saya melakukan _routing_ pada `list_item.dart` dengan kode berikut.
+```
+...
+itemCount: snapshot.data!.length,
+itemBuilder: (_, index) => InkWell(
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ItemDetailPage(item: snapshot.data![index]),
+      ),
+    );
+  },
+),
+```
+Kemudian saya menambahkan file baru `lib/screens/item_detail.dart` dengan kode sebagai berikut.
+```
+class ItemDetailPage extends StatelessWidget {
+  final Item item;
+
+  const ItemDetailPage({Key? key, required this.item}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(item.fields.name),
+        backgroundColor: Colors.blue.shade800,
+        foregroundColor: Colors.white,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '${item.fields.name}',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Text('Brand: ${item.fields.brand}'),
+            SizedBox(height: 10),
+            Text('Type: ${item.fields.type}'),
+            SizedBox(height: 10),
+            Text('Amount: ${item.fields.amount}'),
+            SizedBox(height: 10),
+            Text('Description: ${item.fields.description}'),
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
 
 ## Tugas 8
 ###  Jelaskan perbedaan antara `Navigator.push()` dan `Navigator.pushReplacement()`, disertai dengan contoh mengenai penggunaan kedua metode tersebut yang tepat!
