@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:orbit_tune/screens/menu.dart';
 import 'package:orbit_tune/screens/itemlist_form.dart';
 import 'package:orbit_tune/screens/list_item.dart';
-import 'package:orbit_tune/models/item.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -14,7 +13,7 @@ class LeftDrawer extends StatelessWidget {
         children: [
           const DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: Color.fromRGBO(21, 101, 192, 1),
             ),
             child: Column(
               children: [
@@ -62,7 +61,7 @@ class LeftDrawer extends StatelessWidget {
               */
               Navigator.pushReplacement(
                 context, 
-                MaterialPageRoute(builder: (context) => ItemListPage(items: items))
+                MaterialPageRoute(builder: (context) => const ItemPage())
               );
             },
           ),
@@ -76,7 +75,7 @@ class LeftDrawer extends StatelessWidget {
               */
               Navigator.pushReplacement(
                 context, 
-                MaterialPageRoute(builder: (context) => ItemFormPage())
+                MaterialPageRoute(builder: (context) => const ItemFormPage())
               );
             },
           ),
