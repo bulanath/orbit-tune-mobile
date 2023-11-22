@@ -4,18 +4,37 @@
 **NPM     : 2206032135**<br>
 **Kelas   : PBP C**<br>
 
-<!-- ## Tugas 9
+## Tugas 9
 ### Apakah bisa kita melakukan pengambilan data JSON tanpa membuat model terlebih dahulu? Jika iya, apakah hal tersebut lebih baik daripada membuat model sebelum melakukan pengambilan data JSON?
+Ya bisa, akan tetapi hal tersebut tidak disarankan karena kita tidak dapat mengetahui tipe data yang diambil dari JSON sehingga kita harus mengaksesnya dengan cara yang berbeda-beda tergantung dengan tipe datanya. Kita juga tidak dapat melakukan validasi terhadap data yang kita ambil sehingga data yang diambil bersifat tidak valid. Membuat model terlebih dahulu akan memudahkan kita dalam mengubah data dari JSON menjadi dart _object_.
 
 ### Jelaskan fungsi dari CookieRequest dan jelaskan mengapa _instance_ CookieRequest perlu untuk dibagikan ke semua komponen di aplikasi Flutter.
+`CookieRequest` merupakan salah satu class pada _package_ `pbp_django_auth.dart` yang berfungsi untuk mengambil cookie dari hasil _request_ autentikasi login dan logout ke server Django. `CookieRequest` perlu untuk dibagikan ke semua komponen dalam aplikasi Flutter agar dapat digunakan oleh semua _widget_ pada aplikasi untuk melakukan _request_ ke server Django serta agar status cookies pada aplikasi konsisten.
 
 ### Jelaskan mekanisme pengambilan data dari JSON hingga dapat ditampilkan pada Flutter.
+1. Membuat model kustom dengan memanfaatkan _website_ Quicktype untuk membuat data JSON dari _endpoint_ JSON `/json` yang telah dibuat pada tugas Django.
+2. Menambahkan dependensi HTTP dengan menambahkan _package_ `http` pada proyek Flutter dan menambhakan `<uses-permission android:name="android.permission.INTERNET" />` pada file `android/app/src/main/AndroidManifest.xml` agar dapat memiliki akses internet.
+3. Melakukan _fetch_ data dengan mengimplementasikan fungsi _asyncrhonous_ dan mengirim _request_ HTTP ke server Django untuk mengambil data JSON.
+4. Mengubah data JSON menjadi objek dart menggunakan `utility class` yang sudah dibuat sehingga dapat menampilkan data pada _widget_ dengan memasukkannya sebagai _property_ dari _widget_.
 
 ### Jelaskan mekanisme autentikasi dari input data akun pada Flutter ke Django hingga selesainya proses autentikasi oleh Django dan tampilnya menu pada Flutter.
+1. Pengguna memasukkan _username_ dan _password_ mereka pada halaman `Login`.
+2. Ketika tombol _login_ ditekan, fungsi `login` pada `CookieRequest` akan mengirimkan HTTP _request_ dengan _endpoint_ URL proyek Django.
+3. Pada Django akan dilakukan autentikasi kemudian jika berhasil maka Django akan mengirimkan pesan sukses beserta _session cookie_ dari user.
+4. Setelah server memberikan HTTP _response_, Flutter akan mengambil _session cookie_ dari respon tersebut dan menyimpannya pada `CookieRequest` lalu kemudian pengguna diarahkan ke `MyHomePage` dan muncul tampilan selamat datang.
 
 ### Sebutkan seluruh _widget_ yang kamu pakai pada tugas ini dan jelaskan fungsinya masing-masing.
+- `InkWell` berfungsi untuk membuat _widget_ yang dapat diklik.
+- `ElevatedButton` berfungsi untuk membuat _button_ dengan tampilan naik yang merespon sentuhan atau klik.
+- `SizedBox` berfungsi untuk membuat _widget_ dengan ukuran yang sudah ditentukan.
+-  `ListView` berfungsi untuk menampilkan sekumpulan data dalam bentuk _list_ yang dapat di-_scroll_.
+- `ListItem` berfungsi untuk membuat item pada `ListView`.
+- `FutureBuilder` berfungsi untuk membangun _widget_ secara _asynchronous_.
+- `TextFormField` berfungsi untuk membuat input secara umum.
+- `Column` berfungsi untuk menampilkan komponen secara vertikal.
+- `Padding` berfungsi untuk memberikan jarak sekitar elemen atau _widget_.
 
-### Jelaskan bagaimana cara kamu mengimplementasikan _checklist_ di atas secara _step-by-step_ -->
+### Jelaskan bagaimana cara kamu mengimplementasikan _checklist_ di atas secara _step-by-step_
 
 ## Tugas 8
 ###  Jelaskan perbedaan antara `Navigator.push()` dan `Navigator.pushReplacement()`, disertai dengan contoh mengenai penggunaan kedua metode tersebut yang tepat!
